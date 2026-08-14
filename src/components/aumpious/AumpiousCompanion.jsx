@@ -156,6 +156,29 @@ export default function AumpiousCompanion() {
     return text;
   }, []);
 
+  const callOpenRouter = useCallback(async (system, history) => {
+    const key = import.meta.env.VITE_OPENROUTER_API_KEY;
+    if (!key) throw new Error("No OpenRouter key configured");
+    const res = await fetchWithTimeout("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        model: "meta-llama/llama-3.1-8b-instruct:free",
+        temperature: 0.7,
+        max_tokens: 180,
+        messages: [{ role: "system", content: system }, ...history],
+      }),
+    }, 8000);
+    if (!res.ok) throw new Error(`OpenRouter API error ${res.status}`);
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content?.trim();
+    if (!text) throw new Error("Empty OpenRouter reply");
+    return text;
+  }, []);
+
   const send = useCallback(
     async (text) => {
       const content = (text ?? input).trim();
@@ -175,9 +198,17 @@ export default function AumpiousCompanion() {
       try {
         let reply = null;
 
-        // 1. OpenRouter (free :free models) — lifetime free, requires VITE_OPENROUTER_API_KEY
-        // 1. Groq (llama-3.1-8b-instant) — lifetime free, requires VITE_GROQ_API_KEY
-        if (import.meta.env.VITE_GROQ_API_KEY) {
+        // 1. OpenRouter (free :free models) — requires VITE_OPENROUTER_API_KEY
+        if (import.meta.env.VITE_OPENROUTER_API_KEY) {
+          try {
+            reply = await callOpenRouter(promptSystem, history);
+          } catch (e) {
+            reply = null;
+          }
+        }
+
+        // 2. Groq (llama-3.1-8b-instant) — requires VITE_GROQ_API_KEY
+        if (!reply && import.meta.env.VITE_GROQ_API_KEY) {
           try {
             reply = await callGroq(promptSystem, history);
           } catch (e) {
@@ -185,7 +216,7 @@ export default function AumpiousCompanion() {
           }
         }
 
-        // 2. Free Public LLM API via Pollinations AI (No key required!)
+        // 3. Free Public LLM API via Pollinations AI (No key required!)
         if (!reply) {
           try {
             const response = await fetchWithTimeout(
@@ -212,7 +243,7 @@ export default function AumpiousCompanion() {
           }
         }
 
-        // 3. Keyless single-turn fallback (Pollinations GET)
+        // 4. Keyless single-turn fallback (Pollinations GET)
         if (!reply) {
           try {
             const shortPrompt = `${content}\n(You are Aumpious, Varun Kumar's AI assistant. Be concise.)`;
@@ -244,7 +275,7 @@ export default function AumpiousCompanion() {
         setLoading(false);
       }
     },
-    [input, loading, messages, speak, callGroq]
+    [input, loading, messages, speak, callGroq, callOpenRouter]
   );
 
   const runCommand = (cmd) => {
