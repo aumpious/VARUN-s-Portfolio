@@ -198,19 +198,19 @@ export default function AumpiousCompanion() {
       try {
         let reply = null;
 
-        // 1. OpenRouter (free :free models) — requires VITE_OPENROUTER_API_KEY
-        if (import.meta.env.VITE_OPENROUTER_API_KEY) {
+        // 1. Groq (llama-3.1-8b-instant) — fast, requires VITE_GROQ_API_KEY
+        if (import.meta.env.VITE_GROQ_API_KEY) {
           try {
-            reply = await callOpenRouter(promptSystem, history);
+            reply = await callGroq(promptSystem, history);
           } catch (e) {
             reply = null;
           }
         }
 
-        // 2. Groq (llama-3.1-8b-instant) — requires VITE_GROQ_API_KEY
-        if (!reply && import.meta.env.VITE_GROQ_API_KEY) {
+        // 2. OpenRouter (free :free models) — requires VITE_OPENROUTER_API_KEY
+        if (!reply && import.meta.env.VITE_OPENROUTER_API_KEY) {
           try {
-            reply = await callGroq(promptSystem, history);
+            reply = await callOpenRouter(promptSystem, history);
           } catch (e) {
             reply = null;
           }
