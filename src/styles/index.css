@@ -498,7 +498,7 @@ a {
 }
 
 /* Hero responsive */
-@media (max-width: 1000px) {
+@media (max-width: 760px) {
   body {
     overflow-x: hidden;
   }
