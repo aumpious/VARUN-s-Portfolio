@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import Frame from "../common/Frame";
 import { ACHIEVEMENTS, VOLUNTEER } from "../../data/portfolioData";
 
+const BASE = import.meta.env.BASE_URL;
+
 const CERTIFICATES = [
   {
-    src: "/assets-certificate/fitt-iit-delhi.jpg",
+    src: `${BASE}assets-certificate/fitt-iit-delhi.jpg`,
     label: "INNOVATIVE BHARAT 3.0, FITT, IIT DELHI",
     sub: "Finalist, National Incubation Program",
   },
   {
-    src: "/assets-certificate/tie-iit-kanpur.jpg",
+    src: `${BASE}assets-certificate/tie-iit-kanpur.jpg`,
     label: "TiE-U GLOBAL UP, IIT KANPUR",
     sub: "Rank 2, Team Lead, DDoS Protection SaaS",
   },
   {
-    src: "/assets-certificate/innovative-bharat.jpg",
+    src: `${BASE}assets-certificate/innovative-bharat.jpg`,
     label: "INNOVATIVE BHARAT 3.0",
     sub: "Rank 1, National Winner",
   },

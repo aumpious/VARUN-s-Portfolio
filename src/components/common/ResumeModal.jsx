@@ -1,7 +1,7 @@
 import React from "react";
 import Frame from "./Frame";
 
-const RESUME_PDF = "/assets-resume/Varun-Kumar-Resume.pdf";
+const RESUME_PDF = `${import.meta.env.BASE_URL}assets-resume/Varun-Kumar-Resume.pdf`;
 
 export default function ResumeModal({ isOpen, onClose, onCopyEmail }) {
   if (!isOpen) return null;
