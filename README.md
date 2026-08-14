@@ -46,4 +46,4 @@ The ready-to-publish files will be in the `dist` folder.
 
 The site is deployed on GitHub Pages — you can see it live here:
 
-[https://aumpious.github.io/varun/](https://aumpious.github.io/varun/)
+[https://aumpious.github.io/VARUN-s-Portfolio/](https://aumpious.github.io/VARUN-s-Portfolio/)
